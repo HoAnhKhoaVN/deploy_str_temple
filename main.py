@@ -7,9 +7,9 @@ from my_postprocess.postprocess import _postprocess
 import logging
 from typing import Text
 from PIL import Image
-from log.logger import setup_logger
+# from log.logger import setup_logger
 from time import time
-setup_logger()
+# setup_logger()
 
 def process(
     image_input_file: Text,
@@ -64,6 +64,8 @@ def process(
     if not silent:
         print(f'list_dict_result: {list_dict_result}')
     logging.debug(f"After: {list_dict_result}")
+
+
     # region postprocessing
     start_time = time()
     pil_img_output = _postprocess(
@@ -73,6 +75,9 @@ def process(
     end_time = time()
     time_analysis['postprocess_time'] = end_time - start_time
     # endregion
+
+
+    
     end_time = time()
     logging.info(f"Time inference: {(end_time-start_time)}s")
     return pil_img_output, time_analysis

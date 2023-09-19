@@ -1,16 +1,17 @@
 import math
+from typing import Tuple, List
 def calculate_direction_vector(
-    point1 : tuple[int, int],
-    point2 : tuple[int, int]
-)-> tuple[int, int]:
+    point1 : Tuple[int, int],
+    point2 : Tuple[int, int]
+)-> Tuple[int, int]:
     return (
         point2[0] - point1[0],
         point2[1] - point1[1],
     )
     
 def calculate_angle_between_line(
-    line1: list[tuple[int, int]],
-    line2: list[tuple[int, int]],
+    line1: List[Tuple[int, int]],
+    line2: List[Tuple[int, int]],
 )-> float:
     """
     Get the angle between two lines.

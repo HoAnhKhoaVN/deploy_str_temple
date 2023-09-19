@@ -1,9 +1,9 @@
-paddlepaddle
-paddleocr
-flask
-scikit-learn
-Pillow
-tqdm
-pandas
-autolog
-imutils
+# paddlepaddle
+# paddleocr
+# flask
+# scikit-learn
+# Pillow
+# tqdm
+# pandas
+# autolog
+# imutils

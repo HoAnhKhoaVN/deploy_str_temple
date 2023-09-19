@@ -6,7 +6,7 @@ from typing import Text, List, Dict, Any, Tuple
 from PIL import Image, ImageFont, ImageDraw
 from pylette.color_extraction import get_bg_fg_color
 from translate_to_modern_vietnamese.translate_to_modern_vietnamese import translate_to_modern_vietnamese
-from log.logger import setup_logger
+# from log.logger import setup_logger
 import logging
 from experiment.calc_angle_between_2_line import calculate_angle_between_line
 from experiment.crop_image import crop_image_polygon
@@ -17,7 +17,7 @@ import cv2
 import os
 import numpy as np
 import math
-setup_logger()
+# setup_logger()
 
 def postprocess_text(text: Text):
     # Uppercase characters
@@ -41,7 +41,7 @@ def get_center_point(
     bbox: list,
     text_str: str,
     font: ImageFont,
-)-> list[int, int]:
+)-> List:
     _tl, _tr, _br, _bl = bbox
     a, b = get_para_in_line(_tl, _br)
     _a, _b = get_para_in_line(_tr, _bl)
@@ -70,8 +70,8 @@ def get_point_in_line_y_axis(
     a_line: float,
     b_line: float,
     size : float,
-    first_point: list[int, int],
-)->list[list[int, int]]:
+    first_point: List,
+)->List:
     kc = size // len_text
     res = [first_point]
     point = first_point
@@ -87,12 +87,12 @@ def get_point_in_line_y_axis(
     return res
 
 def get_point_in_line_x_axis(
-    len_text: int,
-    a_line: float,
-    b_line: float,
-    size : float,
-    first_point: list[int, int],
-)->list[list[int, int]]:
+    len_text,
+    a_line,
+    b_line,
+    size,
+    first_point,
+)->List[List]:
     kc = size // len_text
     res = [first_point]
     point = first_point
@@ -108,9 +108,9 @@ def get_point_in_line_x_axis(
     return res
 
 def get_rotated_text_size(
-  text_size: list[float, float],
+  text_size: List,
   angle: float
-)-> list[float, float]:
+)-> List:
   W, H = text_size
   radian_angle = math.radians(angle)
   tan_a = math.tan(radian_angle)
@@ -127,7 +127,7 @@ def check_text_size(
     bbox: list,
     angle: float,
     font_path: str = 'font/arial.ttf'
-)->  tuple:
+)-> Tuple:
     # region get height and width of bounding box
     tl, tr, br, bl = bbox
     width = euclidean_distance(tl, tr)
@@ -572,7 +572,6 @@ def _postprocess(
         bl = (int(bl[0]), int(bl[1]))
         # endregion
 
-        # region 2. Get image from bbox
         x1, y1 = tl
         x2,y2 = br
         _mask_image= crop_image_polygon(
