@@ -219,47 +219,6 @@ def check_bbox_is_horizontal_rectangle(
     # endregion
     return bbox, (height, width)
 
-# def draw_text_horizontal(
-#     text: str,
-#     direction: str,
-#     bbox: Tuple,
-#     draw: ImageDraw,
-#     fg_color: str,
-#     width: float,
-#     height: float,
-# ):
-#     tl = bbox[0]
-#     br = bbox[1]
-#     x1, y1 = tl
-#     x2, y2 = br
-
-#     width = (x2 -x1)
-#     height = (y2 -y1)
-#     # region Calculate Text Size
-#     text_size, pil_font, _ = check_text_size(
-#         text_string= text,
-#         direction = direction,
-#         width= width,
-#         height= height
-#     )
-#     # endregion
-#     # region get position
-#     width_x = (width - text_size[0]) // 2
-#     height_y = (height - text_size[1]) // 2
-#     x_pos = x1 + width_x
-#     y_pos = y1 + height_y
-#     position = (x_pos, y_pos)
-#     # endregion
-
-#     # region draw text
-#     draw.text(
-#         position,
-#         text,
-#         font=pil_font,
-#         fill=fg_color
-#     )
-#     # endregion
-
 def draw_text_horizontal_each_word(
     text: str,
     bbox: list,
@@ -464,7 +423,7 @@ def draw_text_vertical(
 
     # region 2: Calculate position for each word
     len_text  = len(text.split())
-    print(f'len_text: {len_text} words')
+    # print(f'len_text: {len_text} words')
 
     # region 2.1: Get point in top left corner
     lst_point_in_top_left = get_point_in_line_y_axis(
@@ -516,7 +475,7 @@ def draw_text_vertical(
       lst_size.append(font_size)
     max_font_size = min(lst_size)
     # print(f'Font size: {lst_size}')
-    print(f'Min font size: {max_font_size}')
+    # print(f'Min font size: {max_font_size}')
     # endregion
 
     # region 4: Draw the text
@@ -571,9 +530,10 @@ def _postprocess(
     # region Create a PIL image and draw each text using the custom font
     if isinstance(image_fn, str):
         pil_image = Image.open(image_fn)
+        src_img = cv2.imread(image_fn)
     else:
         pil_image = Image.fromarray(image_fn)
-    src_img = cv2.imread(image_fn)
+        src_img = image_fn
     src_img = cv2.cvtColor(src_img, cv2.COLOR_BGR2RGB)
     h, w = src_img.shape[:2]
 
@@ -585,7 +545,7 @@ def _postprocess(
 
 
     for idx, _dict in enumerate(list_dict_result):
-        print(f"===== IDX: {idx+1} =====")
+        # print(f"===== IDX: {idx+1} =====")
 
         # region extract input
         bbox, text= _dict['bbox'], _dict['text']
@@ -601,7 +561,7 @@ def _postprocess(
         line2 = [x_axis, tl]
 
         angle = calculate_angle_between_line(line1, line2)
-        print("Angle between Line 1 and Line 2 (degrees):", angle)
+        # print("Angle between Line 1 and Line 2 (degrees):", angle)
         # endregion
 
         # region 1. Unpack the bounding box
@@ -626,33 +586,10 @@ def _postprocess(
             axis=2
         )
         mask_image = cv2.bitwise_or(mask_image, _mask_image)
-        # cv2.imwrite(
-        #     filename="bbox_image.png",
-        #     img = bbox_image
-        # )
-
-        # cv2.imwrite(
-        #     filename="mask_image.png",
-        #     img = mask_image
-        # )
-        
-
-        # cv2.imwrite(
-        #     filename="cropped_image.png",
-        #     img = cropped_image
-        # )
-
         cropped_image_pil = pil_image.crop((x1, y1, x2, y2))
-        # cropped_image_pil.save("cropped_image_pil.png")
-        # cropped_polygon_img = pil_image.
-        # width_image = x2 - x1
-        # height_image = y2 - y1
-        # endregion
 
         # region 3. Get backgroud and foregroud color
         fg_color, bg_color = get_bg_fg_color(cropped_image_pil)
-        print(f'fg_color: {fg_color}')
-        print(f'bg_color: {bg_color}')
         # endregion
 
         fg_cv = tuple(list(fg_color)[::-1])
@@ -667,7 +604,7 @@ def _postprocess(
         # region calculate height and width in euclidean coordinates
         width = euclidean_distance(tl, tr)
         height = euclidean_distance(tl, bl)
-        print(f"Height x Width : {height}x{width}")
+        # print(f"Height x Width : {height}x{width}")
         # endregion
 
         # region 4. Check image is horizontally or vertically
@@ -676,7 +613,7 @@ def _postprocess(
             direction = 'horizontal'
         else:
             direction = 'vertical'
-        print(f'Direction: {direction}')
+        # print(f'Direction: {direction}')
         # endregion
 
         # # region 5. Translate to modern Vietnamese
@@ -721,9 +658,12 @@ def _postprocess(
     cv_img = np.array(pil_image)
     cv_img = cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB)
     cv_img = cv2.bitwise_and(mask_image, cv_img)
-    cv2.imwrite("mask_image.jpg", mask_image)
     
-    src_img = cv2.imread(image_fn)
+    if isinstance(image_fn, str):
+        src_img = cv2.imread(image_fn)
+    else:
+        src_img = image_fn
+        src_img = cv2.cvtColor(src_img, cv2.COLOR_BGR2RGB)
     src_img = cv2.cvtColor(src_img, cv2.COLOR_BGR2RGB)
     not_masked_image = cv2.bitwise_not(mask_image)
     not_src_img = cv2.bitwise_and(not_masked_image, src_img)

@@ -36,13 +36,13 @@ def predict():
     return response
 
 if __name__ == '__main__':
-    # # region warm up 10 times
-    # print(f'Warm up 10 times')
-    # img = uniform(0, 255, [640, 640, 3]).astype(uint8)
-    # for i in range(10):
-    #     res, _ = process(img)
-    # # endregion
+    # region warm up 10 times
+    print(f'Warm up 10 times')
+    img = uniform(0, 255, [640, 640, 3]).astype(uint8)
+    for i in range(10):
+        res, _ = process(img)
+    # endregion
 
     # region Main process
-    app.run()
+    app.run(debug=True)
     # endregion

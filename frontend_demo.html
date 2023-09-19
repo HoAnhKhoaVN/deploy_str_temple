@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Scene Text Recognition</title>
+    <style>
+      .container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 50px;
+      }
+
+      .input-container {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .input-container label {
+        margin-right: 10px;
+      }
+
+      .canvas-container {
+        display: flex;
+        justify-content: center;
+        align-items: baseline;
+        width: 100%;
+      }
+
+      .canvas-container div {
+        padding: 0.25rem;
+      }
+
+      .canvas-container div p {
+        text-align: center;
+      }
+      .button-container {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+        margin-top: 10px;
+      }
+
+      canvas {
+        border: 1px solid #ccc;
+        margin-bottom: 20px;
+      }
+
+      img {
+        width: 500px;
+      }
+
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1>Scene Text Recognition</h1>
+
+      <div class="input-container">
+        <label for="content-image">Input Image:</label>
+        <input type="file" id="content-image" />
+      </div>
+
+      <!-- <div class="input-container">
+        <label for="style-image">Style Image:</label>
+        <input type="file" id="style-image" />
+      </div> -->
+
+      <div class="canvas-container">
+        <div id="img-content" style="display: none;">
+          <img src="" alt="">
+          <p>Input image</p>
+        </div>
+        <!-- <div id="img-style" style="display: none;">
+          <img src="" alt="">
+          <p>Style Image</p>
+        </div> -->
+      </div>
+
+      <div class="button-container">
+        <button id="convert-button" type="'submit">Run</button>
+      </div>
+
+      <img src="#" id="result" alt="ok" style="display: none;">
+
+      <div class="button-container">
+        <button id="download-button">Download</button>
+      </div>
+    </div>
+    <script
+      src="https://code.jquery.com/jquery-3.7.0.min.js"
+      integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g="
+      crossorigin="anonymous"
+    ></script>
+
+    <script>
+      const contentImageInput = document.getElementById("content-image");
+      const contentCanvas = document.getElementById("content-canvas");
+      const convertButton = document.getElementById("convert-button");
+      const outputCanvas = document.getElementById("output-canvas");
+      const downloadButton = document.getElementById("download-button");
+
+      const imgEl = document.querySelector('#result')
+
+      const images = {};
+
+      contentImageInput.addEventListener("change", function (event) {
+        const file = event.target.files[0];
+        images.image_2 = file;
+        document.querySelector('#img-content').style.display = 'block';
+        document.querySelector('#img-content img').src = URL.createObjectURL(file)
+      });
+
+      convertButton.addEventListener("click", function (event) {
+        const formData = new FormData();
+        formData.append("content_img", images.image_2);
+
+        $.ajax({
+          type: "POST",
+          url: "http://127.0.0.1:5000/predict",
+          data: formData,
+          dataType: "JSON",
+          processData: false,
+          contentType: false,
+          cache: false,
+          success: function (data) {
+            let base64String = data.processed_image
+            // Thiết lập source cho hình ảnh là chuỗi Base64
+            imgEl.src = "data:image/png;base64," + base64String
+            imgEl.style.display = 'initial'
+          },
+        });
+        
+        // Hành động khi người dùng click vào nút "Tải về"
+        downloadButton.addEventListener("click", function() {
+          // Lấy đường dẫn hình ảnh từ canvas
+          var imageURL = outputCanvas.toDataURL("image/png");
+          
+          // Tạo một đối tượng a (link) ẩn để tải xuống
+          var downloadLink = document.createElement("a");
+          downloadLink.href = imageURL;
+          downloadLink.download = "image.png"; // Tên tệp tải xuống
+          
+          // Thêm đối tượng a (link) ẩn vào body
+          document.body.appendChild(downloadLink);
+          
+          // Nhấp vào đối tượng a (link) để tải xuống
+          downloadLink.click();
+          
+          // Xóa đối tượng a (link) sau khi tải xuống
+          document.body.removeChild(downloadLink);
+      });
+      });
+    </script>
+  </body>
+</html>
