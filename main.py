@@ -125,14 +125,17 @@ if __name__ == "__main__":
 
     # IMG_NAME = "366641616_2264556887067173_1651877982799532575_n"
     # IMG_NAME = "365277540_2640178542812959_3109842896588336028_n"
-    IMG_NAME = "cau_doi_1"
+    IMG_NAME = "13925854_308100976209095_8956468595154727390_o"
     # IMG_NAME = "test_image"
     # IMG_NAME = "14718859_208204472925484_1150455697377965541_n"
 
-    img, time_analysis = process(
-        image_input_file=f"input/{IMG_NAME}.jpg",
-    )
+    # img, time_analysis = process(
+    #     image_input_file=f"input/{IMG_NAME}.jpg",
+    # )
 
+    img, time_analysis = process(
+        image_input_file=f'input/{IMG_NAME}.jpg',
+    )
     img.save(f'output/{IMG_NAME}.jpg')
 
     print(f'Time analysis: {time_analysis}')

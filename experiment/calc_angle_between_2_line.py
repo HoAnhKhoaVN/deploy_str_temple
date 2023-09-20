@@ -76,14 +76,6 @@ if __name__ == '__main__':
     tl, tr, br, bl = bbox
     x_axis = (tl[0], 0)
 
-    # # region Calculate the angle between the lines
-    # angle_degrees = calculate_angle_between_line(
-    #     line1_direction= dv_xaxis_tl,
-    #     line2_direction= dv_tl_bl
-    # )
-    # print("Angle between Line 1 and Line 2 (degrees):", angle_degrees)
-    # # endregion
-
     line1 = [tl, bl]
     line2 = [x_axis, tl]
 
