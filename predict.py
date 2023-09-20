@@ -27,10 +27,14 @@ def predict_folder(
     for fn in tqdm(os.listdir(folder_in_path), desc= f"Predict image in folder {folder_in_path}"):
         # region 3.1. Get image and process
         img_path = os.path.join(folder_in_path, fn)
-        pil_img_output, time_analysis = process(
-            image_input_file= img_path,
-            silent= True
-        )
+        try:
+            pil_img_output, time_analysis = process(
+                image_input_file= img_path,
+                silent= True
+            )
+        except:
+            print(f'Error image: {fn}')
+            continue
         # endregion
 
         # region 3.2: Handle output image
@@ -90,10 +94,15 @@ if __name__ == '__main__':
     for fn in tqdm(os.listdir(FODLER_IN_PATH), desc= f"Predict image in folder {FODLER_IN_PATH}"):
         # region 3.1. Get image and process
         img_path = os.path.join(FODLER_IN_PATH, fn)
-        pil_img_output, time_analysis = process(
-            image_input_file= img_path,
-            silent= True
-        )
+        try:
+            pil_img_output, time_analysis = process(
+                image_input_file= img_path,
+                silent= True
+            )
+        except Exception as e:
+            print(f"Error image: {img_path}")
+            print(f"Error: {e}")
+            continue
         # endregion
 
         # region 3.2: Handle output image

@@ -67,7 +67,6 @@ def calculate_angle_between_line(
     angle_degrees = math.degrees(angle_radians)
     
     # endregion
-
     return angle_degrees
 
 if __name__ == '__main__':

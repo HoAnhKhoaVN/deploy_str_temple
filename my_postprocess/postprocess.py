@@ -559,9 +559,17 @@ def _postprocess(
         x_axis = (tl[0], 0)
         line1 = [tl, bl]
         line2 = [x_axis, tl]
+        
 
         angle = calculate_angle_between_line(line1, line2)
-        # print("Angle between Line 1 and Line 2 (degrees):", angle)
+
+        a1, b1 = get_para_in_line(tl, bl)
+        a2, b2 = get_para_in_line(bl, br)
+        x_intersect =(b2 - b1)/(a1 - a2)
+        print(f'x_intersect: {x_intersect}')
+        if x_intersect > bl[0]:
+            angle = -angle
+        print("Angle between Line 1 and Line 2 (degrees):", angle)
         # endregion
 
         # region 1. Unpack the bounding box
@@ -588,7 +596,30 @@ def _postprocess(
         cropped_image_pil = pil_image.crop((x1, y1, x2, y2))
 
         # region 3. Get backgroud and foregroud color
-        fg_color, bg_color = get_bg_fg_color(cropped_image_pil)
+        c1, c2 = get_bg_fg_color(cropped_image_pil)
+        # endregion
+
+        # region calculate average value of 4 pixel
+        mean_corner_pixel = np.mean(src_img[tl], src_img[tr], src_img[br], src_img[bl])
+        d_c1 = euclidean_distance(
+            a = mean_corner_pixel,
+            b = np.array(c1)
+        )
+        d_c2 = euclidean_distance(
+            a = mean_corner_pixel,
+            b = np.array(c2)
+        )
+
+        if d_c1 < d_c2:
+            bg_color = c1
+            fg_color = c2
+        else:
+            bg_color = c2
+            fg_color = c1
+        
+        print(f"mean pixel: {mean_corner_pixel}")
+        print(f"Background color: {bg_color}")
+        print(f"foreground color: {fg_color}")
         # endregion
 
         fg_cv = tuple(list(fg_color)[::-1])
