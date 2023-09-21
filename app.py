@@ -5,10 +5,10 @@ from PIL import Image
 from numpy import array
 from main import process
 import logging
-from log.logger import setup_logger
+# from log.logger import setup_logger
 from numpy.random import uniform
 from numpy import uint8
-setup_logger()
+# setup_logger()
 
 app = Flask(__name__)
 

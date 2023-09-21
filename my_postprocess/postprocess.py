@@ -608,7 +608,7 @@ def _postprocess(
         a_tr_br, b_tr_br = get_para_in_line(tr, br)
         a_tl_bl, b_tl_bl = get_para_in_line(tl, bl)
         # endregion
-        N = 10
+        N = 500
         # region get 10 points in line top left, top right -> x -> y
         x_tl, x_tr = tl[0], tr[0]
         delta_x = np.abs(x_tl - x_tr)
@@ -689,12 +689,13 @@ def _postprocess(
             [bl[1], bl[0]]
         ]
 
+
         points.extend(lst_point_in_line_tl_tr)
         points.extend(lst_point_in_line_bl_br)
         points.extend(lst_point_in_line_tl_bl)
         points.extend(lst_point_in_line_tr_br)
 
-        # print(f'points: {points}')
+        print(f'Length points: {len(points)}')
 
         # region get RGB color from points
         lst_rgb = []
