@@ -133,7 +133,7 @@ def check_text_size(
     width = euclidean_distance(tl, tr)
     height = euclidean_distance(tl, bl)
     # endregion
-    font_size = 1
+    font_size = 10
     while True:
         pil_font = ImageFont.truetype(font_path, font_size)
         text_size = get_text_dimensions(
@@ -148,8 +148,8 @@ def check_text_size(
 
         # endregion
 
-        width_x = (width - rotated_text_width) // 2
-        height_y = (height - rotated_text_height) // 2
+        width_x = (width - rotated_text_width * 10 / 9) // 2 # mở rộng kích thước ra xíu -> Để lúc nào cũng vẽ đủ chữ
+        height_y = (height - rotated_text_height * 10 / 9) // 2
 
         if width_x < 0 or height_y < 0:
             # Return font size before
@@ -399,7 +399,6 @@ def draw_text_horizontal_full_word(
     # endregion
     return image
 
-
 def draw_text_vertical(
     text: str,
     bbox: list,
@@ -560,15 +559,18 @@ def _postprocess(
         line1 = [tl, bl]
         line2 = [x_axis, tl]
         
-
         angle = calculate_angle_between_line(line1, line2)
 
-        a1, b1 = get_para_in_line(tl, bl)
+        a1, b1 = get_para_in_line(x_axis, tl)
         a2, b2 = get_para_in_line(bl, br)
         x_intersect =(b2 - b1)/(a1 - a2)
         print(f'x_intersect: {x_intersect}')
         if x_intersect > bl[0]:
             angle = -angle
+        else:
+            angle = angle
+
+
         print("Angle between Line 1 and Line 2 (degrees):", angle)
         # endregion
 
@@ -581,7 +583,7 @@ def _postprocess(
         # endregion
 
         x1, y1 = tl
-        x2,y2 = br
+        x2, y2 = br
         _mask_image= crop_image_polygon(
             img = src_img,
             points= bbox
@@ -600,10 +602,115 @@ def _postprocess(
         # endregion
 
         # region calculate average value of 4 pixel
-        mean_corner_pixel = np.mean(src_img[tl], src_img[tr], src_img[br], src_img[bl])
+        # region get line
+        a_tl_tr, b_tl_tr = get_para_in_line(tl, tr)
+        a_bl_br, b_bl_br = get_para_in_line(bl, br)
+        a_tr_br, b_tr_br = get_para_in_line(tr, br)
+        a_tl_bl, b_tl_bl = get_para_in_line(tl, bl)
+        # endregion
+        N = 10
+        # region get 10 points in line top left, top right -> x -> y
+        x_tl, x_tr = tl[0], tr[0]
+        delta_x = np.abs(x_tl - x_tr)
+        kc_x = delta_x / (N +1)
+        tmp_x = x_tl
+        tmp_x_arr = []
+        for _ in range(N):
+            tmp_x+=int(kc_x)
+            tmp_x_arr.append(tmp_x)
+        
+        tmp_y_arr = []
+        for x in tmp_x_arr:
+            tmp_y = int(a_tl_tr * x + b_tl_tr)
+            tmp_y_arr.append(tmp_y)
+
+        lst_point_in_line_tl_tr= [[x, y] for x, y in zip(tmp_y_arr, tmp_x_arr)]
+        # endregion
+            
+        # region get 10 points in line bottom left, bottom right
+        x_bl, x_br = bl[0], br[0]
+        delta_x = np.abs(x_bl - x_br)
+        kc_x = delta_x / (N +1)
+        tmp_x = x_bl
+        tmp_x_arr = []
+        for _ in range(N):
+            tmp_x+=int(kc_x)
+            tmp_x_arr.append(tmp_x)
+        
+        tmp_y_arr = []
+        for x in tmp_x_arr:
+            tmp_y = int(a_bl_br * x + b_bl_br)
+            tmp_y_arr.append(tmp_y)
+
+        lst_point_in_line_bl_br= [[x, y] for x, y in zip(tmp_y_arr, tmp_x_arr)]
+
+        # endregion
+
+        # region get 10 points in line top left, bottom left
+        y_tl, y_bl = tl[1], bl[1]
+        delta_y = np.abs(y_tl - y_bl)
+        kc_y = delta_y / (N + 1)
+        tmp_y = y_tl
+        tmp_y_arr = []
+        for _ in range(N):
+            tmp_y+=int(kc_y)
+            tmp_y_arr.append(tmp_y)
+        
+        tmp_x_arr = []
+        for y in tmp_y_arr:
+            tmp_x = int((y - b_tl_bl)/a_tl_bl)
+            tmp_x_arr.append(tmp_x)
+
+        lst_point_in_line_tl_bl= [[x, y] for x, y in zip(tmp_y_arr, tmp_x_arr)]
+        # endregion
+
+        # region get 10 points in line top right , bottom right
+        y_tr, y_br = tr[1], br[1]
+        delta_y = np.abs(y_tr - y_br)
+        kc_y = delta_y / (N + 1)
+        tmp_y = y_tr
+        tmp_y_arr = []
+        for _ in range(N):
+            tmp_y+=int(kc_y)
+            tmp_y_arr.append(tmp_y)
+        
+        tmp_x_arr = []
+        for y in tmp_y_arr:
+            tmp_x = int((y - b_tr_br)/a_tr_br)
+            tmp_x_arr.append(tmp_x)
+
+        lst_point_in_line_tr_br= [[x, y] for x, y in zip(tmp_y_arr, tmp_x_arr)]
+        # endregion
+
+        points = [
+            [tl[1], tl[0]],
+            [tr[1], tr[0]],
+            [br[1], br[0]],
+            [bl[1], bl[0]]
+        ]
+
+        points.extend(lst_point_in_line_tl_tr)
+        points.extend(lst_point_in_line_bl_br)
+        points.extend(lst_point_in_line_tl_bl)
+        points.extend(lst_point_in_line_tr_br)
+
+        # print(f'points: {points}')
+
+        # region get RGB color from points
+        lst_rgb = []
+        for p in points:
+            lst_rgb.append(src_img[p[0],p[1]])
+        np_rgb  = np.array(lst_rgb)
+        # endregion
+
+        mean_corner_pixel = np.mean(
+           np_rgb, axis=0
+        )
+
+        # print(mean_corner_pixel)
         d_c1 = euclidean_distance(
             a = mean_corner_pixel,
-            b = np.array(c1)
+            b = np.array(c1)                      
         )
         d_c2 = euclidean_distance(
             a = mean_corner_pixel,
@@ -617,7 +724,7 @@ def _postprocess(
             bg_color = c2
             fg_color = c1
         
-        print(f"mean pixel: {mean_corner_pixel}")
+        print(f"Mean pixel: {mean_corner_pixel}")
         print(f"Background color: {bg_color}")
         print(f"foreground color: {fg_color}")
         # endregion
