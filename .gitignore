@@ -4,3 +4,5 @@ input/
 output/
 *.log
 *.jpg
+.vscode/
+input_2/

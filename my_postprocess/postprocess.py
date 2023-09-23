@@ -19,6 +19,49 @@ import numpy as np
 import math
 # setup_logger()
 
+def voting_rgb(
+    c1 : List,
+    c2: List,
+    cx: List
+)-> bool:
+    # region 1: Unpack RBG
+    r1, g1, b1 = c1
+    r2, g2, b2 = c2
+    rx, gx, bx = cx
+    # endregion
+
+    lst_voting = []
+    # region 2: Compate red channel
+    if abs(r1 - rx) > abs(r2 - rx):
+        lst_voting.append(True)
+    else:
+        lst_voting.append(False)
+
+    # endregion
+
+    # region compate greed channel
+    if abs(g1 - gx) > abs(g2 - gx):
+        lst_voting.append(True)
+    else:
+        lst_voting.append(False)
+    # endregion
+
+    # region compate blue channel
+    if abs(b1 - bx) > abs(b2 - bx):
+        lst_voting.append(True)
+    else:
+        lst_voting.append(False)
+    # endregion
+
+    # region voting
+    len_c1 = sum(lst_voting)
+    len_c2 = 3 - len_c1
+    if len_c1 > len_c2:
+        return True
+    else:
+        return False
+    # endregion
+
 def postprocess_text(text: Text):
     # Uppercase characters
     text = text.upper()
@@ -351,17 +394,25 @@ def draw_text_horizontal_full_word(
     angle,
     font_path : str = 'font/arial.ttf',
 ):
+    # region 1: Xác định kích thước của văn bản
     font_size = check_text_size(
         text_string= text,
         bbox = bbox,
         angle= angle,
       )
+    # endregion
 
-    # region 4: Draw the text
+    # region 2: Viết và xoay văn bản (tất cả các từ trên một dòng)
+    # region 2.1: Xác định font chữ
     font = ImageFont.truetype( font_path , font_size)
+    # endregion
+
+    # region 2.2: Xác định điểm trung tâm
     p_center, text_size = get_center_point(bbox, text, font)
     w_text, h_text = text_size
-    # region 4.1: Create temporary image
+    # endregion
+    
+    # region 2.3: Tạo một ảnh giả có kích thước bằng với độ dài và rộng của văn bản
     tmp_img = Image.new(
         mode = 'RGB',
         size = (w_text, h_text),
@@ -369,7 +420,7 @@ def draw_text_horizontal_full_word(
     )
     # endregion
 
-    # region 4.2: Draw text
+    # region 2.4: Viết văn bản
     tmp_draw = ImageDraw.Draw(tmp_img)
     tmp_draw.text(
     xy= (0,0),
@@ -382,7 +433,7 @@ def draw_text_horizontal_full_word(
 
     # endregion
 
-    # region 4.3: Rotate text
+    # region 2.5: Xoay văn bản
     tmp_img = tmp_img.rotate(
     angle= angle,
     expand= True,
@@ -390,7 +441,7 @@ def draw_text_horizontal_full_word(
     )
     # endregion
 
-    # region 4.4: Paste text
+    # region 2.6: Chèn văn bản vào hình góc
     image.paste(
         im = tmp_img,
         box= p_center
@@ -411,20 +462,24 @@ def draw_text_vertical(
     font_path : str = 'font/arial.ttf',
 ):
     tl, tr, br, bl = bbox
-
-    # region 1: Write the equation of the line
+    # region 1: Xác định bbox cho mỗi chữ trong văn bản
+    # region 1.1: Viết phương trình đường thẳng của top-left và bottom-left
     a_line_left, b_line_left = get_para_in_line(tl,bl)
     # print(a_line_left, b_line_left )
+    # endregion
 
+    # region 1.2: Viết phương trình đường thẳng của top-right và bottom-right
     a_line_right, b_line_right = get_para_in_line(tr,br)
     # print(a_line_right, b_line_right)
     # endregion
 
-    # region 2: Calculate position for each word
+    # endregion
+
+    # region 2: Tính toán trung điểm cho mỗi từ
     len_text  = len(text.split())
     # print(f'len_text: {len_text} words')
 
-    # region 2.1: Get point in top left corner
+    # region 2.1: Lấy các điểm trên đường thẳng top-left và bottom-left
     lst_point_in_top_left = get_point_in_line_y_axis(
         len_text = len_text,
         a_line = a_line_left,
@@ -437,7 +492,7 @@ def draw_text_vertical(
     # print(f'lst_point_in_top_left : {lst_point_in_top_left}')
     # endregion
 
-    # region 2.2: Get point in top right corner
+    # region 2.2: Lấy các điểm trên đường thẳng top-left và bottom-left
     lst_point_in_top_right = get_point_in_line_y_axis(
         len_text = len_text,
         a_line = a_line_right,
@@ -449,7 +504,7 @@ def draw_text_vertical(
     # print(f'lst_point_in_top_right : {lst_point_in_top_right}')
     # endregion
 
-    # region 2.3: Merge point
+    # region 2.3: Xác định bbox cho mỗi chữ
     lst_bbox = []
     for idx in range(len(lst_point_in_top_left)-1):
         tl = lst_point_in_top_left[idx]
@@ -463,7 +518,7 @@ def draw_text_vertical(
 
     # endregion
 
-    # region 3: Calculate size of text
+    # region 3: Tính toán kích thước của mỗi chữ
     lst_size = []
     for w, _bbox in zip(text.split(), lst_bbox):
       font_size = check_text_size(
@@ -477,7 +532,7 @@ def draw_text_vertical(
     # print(f'Min font size: {max_font_size}')
     # endregion
 
-    # region 4: Draw the text
+    # region 4: Viết và xoay chữ
     font = ImageFont.truetype( font_path , max_font_size)
     for w , _bbox in zip(text.split(), lst_bbox):
       p_center, text_size = get_center_point(_bbox, w, font)
@@ -546,14 +601,14 @@ def _postprocess(
     for idx, _dict in enumerate(list_dict_result):
         # print(f"===== IDX: {idx+1} =====")
 
-        # region extract input
+        # region 1: Extract input
         bbox, text= _dict['bbox'], _dict['text']
         if not text:
             continue
         logging.info(f"Text: {text}")
         # endregion
         
-        # region Calculate the angle between the lines
+        # region 2. Calculate the angle between the lines
         tl, tr, br, bl = bbox
         x_axis = (tl[0], 0)
         line1 = [tl, bl]
@@ -574,13 +629,13 @@ def _postprocess(
         print("Angle between Line 1 and Line 2 (degrees):", angle)
         # endregion
 
-        # region 1. Unpack the bounding box
+        # region 3: Create mask for bbox polygon
         (tl, tr, br, bl) = bbox
         tl = (int(tl[0]), int(tl[1]))
         tr = (int(tr[0]), int(tr[1]))
         br = (int(br[0]), int(br[1]))
         bl = (int(bl[0]), int(bl[1]))
-        # endregion
+
 
         x1, y1 = tl
         x2, y2 = br
@@ -596,10 +651,11 @@ def _postprocess(
         )
         mask_image = cv2.bitwise_or(mask_image, _mask_image)
         cropped_image_pil = pil_image.crop((x1, y1, x2, y2))
-
-        # region 3. Get backgroud and foregroud color
-        c1, c2 = get_bg_fg_color(cropped_image_pil)
         # endregion
+
+        # region 4. Get backgroud and foregroud color
+        c1, c2 = get_bg_fg_color(cropped_image_pil)
+        
 
         # region calculate average value of 4 pixel
         # region get line
@@ -682,6 +738,7 @@ def _postprocess(
         lst_point_in_line_tr_br= [[x, y] for x, y in zip(tmp_y_arr, tmp_x_arr)]
         # endregion
 
+        # region get all points
         points = [
             [tl[1], tl[0]],
             [tr[1], tr[0]],
@@ -689,13 +746,13 @@ def _postprocess(
             [bl[1], bl[0]]
         ]
 
-
         points.extend(lst_point_in_line_tl_tr)
         points.extend(lst_point_in_line_bl_br)
         points.extend(lst_point_in_line_tl_bl)
         points.extend(lst_point_in_line_tr_br)
 
         print(f'Length points: {len(points)}')
+        # endregion
 
         # region get RGB color from points
         lst_rgb = []
@@ -704,11 +761,10 @@ def _postprocess(
         np_rgb  = np.array(lst_rgb)
         # endregion
 
+        # region get mean RBG
         mean_corner_pixel = np.mean(
            np_rgb, axis=0
         )
-
-        # print(mean_corner_pixel)
         d_c1 = euclidean_distance(
             a = mean_corner_pixel,
             b = np.array(c1)                      
@@ -724,14 +780,46 @@ def _postprocess(
         else:
             bg_color = c2
             fg_color = c1
-        
         print(f"Mean pixel: {mean_corner_pixel}")
+        # endregion
+
+        # # region Calculate distance each region color with background and foreground color
+        # bool_color = [True if euclidean_distance(c, c1) < euclidean_distance(c, c2) else False for c in np_rgb]
+        # c1_point = sum(bool_color)
+        # c2_point = len(points) - c1_point
+        # print(f'c1_point: {c1_point}')
+        # print(f'c2_point: {c2_point}')
+        # if c1_point > c2_point:
+        #     bg_color = c1
+        #     fg_color = c2
+        # else:
+        #     bg_color = c2
+        #     fg_color = c1
+        # # endregion
+
+        # # region voting RGB
+        # bool_color = [voting_rgb(c1, c2, cx) for cx in np_rgb]
+        # c1_point = sum(bool_color)
+        # c2_point = len(points) - c1_point
+        # print(f'c1_point: {c1_point}')
+        # print(f'c2_point: {c2_point}')
+        # if c1_point > c2_point:
+        #     bg_color = c1
+        #     fg_color = c2
+        # else:
+        #     bg_color = c2
+        #     fg_color = c1
+        # # endregion
+
         print(f"Background color: {bg_color}")
         print(f"foreground color: {fg_color}")
         # endregion
 
         fg_cv = tuple(list(fg_color)[::-1])
         bg_cv = tuple(list(bg_color)[::-1])
+
+        # endregion
+        
         # region 5. Create polygon
         draw.polygon(
             xy=(tl, tr, br, bl),
@@ -739,7 +827,7 @@ def _postprocess(
         )
         # endregion
 
-        # region calculate height and width in euclidean coordinates
+        # region 6: Calculate height and width in euclidean coordinates
         width = euclidean_distance(tl, tr)
         height = euclidean_distance(tl, bl)
         # print(f"Height x Width : {height}x{width}")

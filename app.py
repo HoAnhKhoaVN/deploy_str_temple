@@ -44,5 +44,5 @@ if __name__ == '__main__':
     # endregion
 
     # region Main process
-    app.run(debug=True)
+    app.run()
     # endregion

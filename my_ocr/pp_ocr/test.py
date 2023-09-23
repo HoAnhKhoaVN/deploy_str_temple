@@ -17,10 +17,11 @@ def ocr(
     s = time()
     res= []
     # region Postprocessing
-    for line in result:
-        _bbox, (text, prop) = line
-        bbox = [[int(bb[0]), int(bb[1])] for bb in _bbox]
-        res.append([bbox, text, prop])
+    if result:
+        for line in result:
+            _bbox, (text, prop) = line
+            bbox = [[int(bb[0]), int(bb[1])] for bb in _bbox]
+            res.append([bbox, text, prop])
     # endregion
     e = time()
     time_analysis['ppocr_postprocess'] = e - s
