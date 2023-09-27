@@ -29,6 +29,7 @@ def crop_image_polygon(
 
     # region get 
     return mask
+    # return mask, cropped
     # endregion
 
 if __name__ == '__main__':
@@ -36,9 +37,8 @@ if __name__ == '__main__':
     img = cv2.imread("366641616_2264556887067173_1651877982799532575_n.jpg")
     bbox = [[117, 99], [217, 74], [284, 353], [184, 378]]
     (
-        res,
         mask,
-        cropped
+        # cropped
     )= crop_image_polygon(
         img = img,
         points= bbox
@@ -71,6 +71,6 @@ if __name__ == '__main__':
     # cv2.destroyAllWindows()
 
     cv2.imwrite(
-        filename= "D:/Master/OCR_Nom/fulllow_ocr_temple/experiment/cropped.png",
+        filename= "D:/Master/OCR_Nom/deploy/azure/str_vietnam_temple/experiment/cropped.png",
         img = cropped
     )
