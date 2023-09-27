@@ -1,13 +1,14 @@
 from equation_line import get_para_in_line
 from distance import euclidean_distance
+from typing import List
 
 def get_point_in_line(
     len_text: int,
     a_line: float,
     b_line: float,
     size : float,
-    first_point: list[int, int],
-)->list[list[int, int]]:
+    first_point: List[int, int],
+)->List[List[int, int]]:
     kc = size // len_text
     res = [first_point]
     point = first_point
@@ -25,7 +26,7 @@ def get_point_in_line(
 
 def get_center_point(
     bbox: list
-)-> list[int, int]:
+)-> List[int, int]:
     _tl, _tr, _br, _bl = bbox
     a, b = get_para_in_line(_tl, _br)
     # print(f"a, b: {a,b}")
