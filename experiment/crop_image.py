@@ -22,14 +22,15 @@ def crop_image_polygon(
         -1,
         cv2.LINE_AA
     )
-    # res = cv2.bitwise_and(img,img,mask = mask)
-    # x,y,w,h = cv2.boundingRect(points) # returns (x,y,w,h) of the rect
-    # cropped = res[y: y + h, x: x + w]
+    
+    res = cv2.bitwise_and(img,img,mask = mask)
+    x,y,w,h = cv2.boundingRect(points) # returns (x,y,w,h) of the rect
+    cropped = res[y: y + h, x: x + w]
     # endregion
 
     # region get 
-    return mask
-    # return mask, cropped
+    # return mask
+    return mask, cropped
     # endregion
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 # from log.logger import setup_logger
 # setup_logger()
 from paddleocr import PaddleOCR
-pdocr = PaddleOCR(use_angle_cls=True, lang='ch')
+pdocr = PaddleOCR(use_angle_cls=True, lang='ch', det_db_thresh=0.2)
 from time import time
 
 
@@ -10,13 +10,15 @@ def ocr(
     time_analysis: dict = {}
 )-> list:
     s = time()
-    result = pdocr.ocr(img_path, cls=True)[0]
+    # result = pdocr.ocr(img_path, cls=False, det= False, rec= True)[0]
+    result = pdocr.ocr(img_path, cls=False)[0]
+    print(f"result in test OCR: {result}")
     e = time()
     time_analysis['ppocr_time'] = e - s
 
     s = time()
     res= []
-    # region Postprocessing
+    # region Postprocessing  
     if result:
         for line in result:
             _bbox, (text, prop) = line
@@ -30,7 +32,7 @@ def ocr(
 
 
 if __name__ == "__main__":
-    img_path = "D:/Master/OCR_Nom/fulllow_ocr_temple/input/13925854_308100976209095_8956468595154727390_o.jpg"
+    img_path = "D:\\Master\\OCR_Nom\\deploy\\azure\\str_vietnam_temple\\input_2\\err2.jpg"
     result, time_analysis = ocr(img_path)
     bbox, text, prop = result[0]
     print(f'bbox: {bbox}')

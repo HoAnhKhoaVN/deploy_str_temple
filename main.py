@@ -38,6 +38,16 @@ def process(
     start_time = time()
 
     list_dict_result = []
+    # lst_han_nom_script = list(map(lambda x: x[1], result))
+    # lst_bbox = list(map(lambda x: x[0], result))
+    # lst_is_han_nom = list(map(lambda x: is_han_nom(x) , lst_han_nom_script))
+    # print(f'lst_bbox : {lst_bbox}')
+    # print(f'lst_is_han_nom: {lst_is_han_nom}')
+    # exit(0)
+    # new_lst_bbox = 
+    # lst_trans = 
+
+    
     for bbox, han_nom_script, _ in result:
         # print(f'bbox: {bbox}')
         # print(f'text: {han_nom_script}')
@@ -61,6 +71,8 @@ def process(
     end_time = time()
     time_analysis['translate_time'] = end_time - start_time
     # endregion
+
+
     if not silent:
         print(f'list_dict_result: {list_dict_result}')
     logging.debug(f"After: {list_dict_result}")
