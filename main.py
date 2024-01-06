@@ -1,7 +1,7 @@
 import argparse
 import os
 from utils.check_language import is_han_nom
-from my_ocr.pp_ocr.test import ocr
+from my_ocr.pp_ocr.predict import ocr
 from translate.hcmus_api import hcmus_translate
 from my_postprocess.postprocess import _postprocess
 import logging
