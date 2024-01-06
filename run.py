@@ -38,7 +38,6 @@ def process(
     start_time = time()
     list_dict_result = []
 
-    
     for bbox, han_nom_script, _ in result:
         # print(f'bbox: {bbox}')
         # print(f'text: {han_nom_script}')
