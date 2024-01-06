@@ -16,7 +16,7 @@ def process(
     silent: bool = False
 )-> Image:
     time_analysis = dict()
-    # region Preprocessing
+    # region 1. Preprocessing
     # endregion Preprocessing
 
     # region OCR
@@ -36,16 +36,7 @@ def process(
 
     # region translate to Vietnamese
     start_time = time()
-
     list_dict_result = []
-    # lst_han_nom_script = list(map(lambda x: x[1], result))
-    # lst_bbox = list(map(lambda x: x[0], result))
-    # lst_is_han_nom = list(map(lambda x: is_han_nom(x) , lst_han_nom_script))
-    # print(f'lst_bbox : {lst_bbox}')
-    # print(f'lst_is_han_nom: {lst_is_han_nom}')
-    # exit(0)
-    # new_lst_bbox = 
-    # lst_trans = 
 
     
     for bbox, han_nom_script, _ in result:
@@ -94,7 +85,6 @@ def process(
     logging.info(f"Time inference: {(end_time-start_time)}s")
     return pil_img_output, time_analysis
 
-
 def main():
     # region Input
     ap = argparse.ArgumentParser()
@@ -128,13 +118,6 @@ def main():
 
 if __name__ == "__main__":
     # main()
-
-    # img: Image = process(
-    #     image_input_file="D:/Master/OCR_Nom/fulllow_ocr_temple/input/365277540_2640178542812959_3109842896588336028_n.jpg"
-    # )
-    # img.save('output/365277540_2640178542812959_3109842896588336028_n_pdocr.jpg')
-
-
     # IMG_NAME = "366641616_2264556887067173_1651877982799532575_n"
     # IMG_NAME = "365277540_2640178542812959_3109842896588336028_n"
     # IMG_NAME = "13925854_308100976209095_8956468595154727390_o"
@@ -147,10 +130,6 @@ if __name__ == "__main__":
     # IMG_NAME = "test_image"
     # IMG_NAME = "14718859_208204472925484_1150455697377965541_n"
     # IMG_NAME = '13718780_847719332039821_170320190789157617_n'
-
-    # img, time_analysis = process(
-    #     image_input_file=f"input/{IMG_NAME}.jpg",
-    # )
 
     img, time_analysis = process(
         image_input_file=f'input/{IMG_NAME}.jpg',
