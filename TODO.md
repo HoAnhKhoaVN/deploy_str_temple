@@ -1,6 +1,6 @@
 # To do list
 - [x] Run again
-- [ ] Origanizate code
+- [x] Origanizate code
 - [ ] convert code to OOP
 - [ ] Add code remove background
 - [ ] Add code margin, space , the size of character
