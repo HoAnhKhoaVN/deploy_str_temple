@@ -8,17 +8,17 @@ from pylette.color_extraction import get_bg_fg_color
 from translate_to_modern_vietnamese.translate_to_modern_vietnamese import translate_to_modern_vietnamese
 # from log.logger import setup_logger
 import logging
-from experiment.calc_angle_between_2_line import calculate_angle_between_line
-from experiment.crop_image import crop_image_polygon
-from experiment.distance import euclidean_distance
-from experiment.equation_line import get_para_in_line
-from experiment.calc_angle_between_2_line import calculate_angle_between_line
+from rotate_img.calc_angle_between_2_line import calculate_angle_between_line
+from rotate_img.crop_image import crop_image_polygon
+from rotate_img.distance import euclidean_distance
+from rotate_img.equation_line import get_para_in_line
+from rotate_img.calc_angle_between_2_line import calculate_angle_between_line
 import cv2
 import os
 import numpy as np
 import math
-from experiment.rotate_image import rotate_image
-from experiment.detect_rectangle_box import detect_and_crop_image
+from rotate_img.rotate_image import rotate_image
+from rotate_img.detect_rectangle_box import detect_and_crop_image
 # setup_logger()
 
 def voting_rgb(
@@ -712,7 +712,7 @@ def _postprocess(
 
             # fg_cv = tuple(list(fg_color)[::-1])
             # bg_cv = tuple(list(bg_color)[::-1])
-            # endregion
+            
             
             # region 5. Create polygon
             draw.polygon(

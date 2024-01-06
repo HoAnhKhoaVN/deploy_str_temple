@@ -9,3 +9,4 @@
 - [ ] Add code get shape of image
 - [ ] Dockerfile
 - [ ] call api file
+- [ ] build docker compose
