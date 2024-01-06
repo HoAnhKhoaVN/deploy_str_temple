@@ -1,13 +1,13 @@
-# paddlepaddle
-# paddleocr
-# flask
-# scikit-learn
-# Pillow
-# tqdm
-# pandas
-# autolog
-# imutils
+paddlepaddle
+paddleocr
+flask
+scikit-learn
+Pillow
+tqdm
+pandas
+autolog
+imutils
 PyMuPDF==1.21.1
 paddleocr>=2.0.1
 paddlepaddle -i https://pypi.tuna.tsinghua.edu.cn/simple
-
+rich
