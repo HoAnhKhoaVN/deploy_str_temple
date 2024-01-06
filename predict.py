@@ -1,6 +1,6 @@
 import os
 import argparse
-from main import process
+from run import process
 from PIL import Image
 from tqdm import tqdm
 from typing import Text, List

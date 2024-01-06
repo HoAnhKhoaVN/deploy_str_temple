@@ -3,7 +3,7 @@ from io import BytesIO
 import base64
 from PIL import Image
 from numpy import array
-from main import process
+from run import process
 import logging
 # from log.logger import setup_logger
 from numpy.random import uniform
