@@ -7,3 +7,5 @@
 - [ ] Add code multi-process
 - [ ] Add code font classification
 - [ ] Add code get shape of image
+- [ ] Dockerfile
+- [ ] call api file
