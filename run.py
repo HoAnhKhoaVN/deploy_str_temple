@@ -19,7 +19,7 @@ def process(
     # region 1. Preprocessing
     # endregion Preprocessing
 
-    # region OCR
+    # region 2. OCR
     start_time = time()
     result, time_analysis = ocr(image_input_file, time_analysis)
     end_time = time()
@@ -28,13 +28,11 @@ def process(
         print(f'Result: {result}')
 
     # endregion OCR
-    logging.debug(f"Before: {result}")
 
-
-    # region Chinese language model
+    # region 3. Chinese language model
     # endregion
 
-    # region translate to Vietnamese
+    # region 4. Translate to Vietnamese
     start_time = time()
     list_dict_result = []
 
@@ -60,15 +58,14 @@ def process(
         )
     end_time = time()
     time_analysis['translate_time'] = end_time - start_time
-    # endregion
-
 
     if not silent:
         print(f'list_dict_result: {list_dict_result}')
     logging.debug(f"After: {list_dict_result}")
 
+    # endregion
 
-    # region postprocessing
+    # region 5. Postprocessing
     start_time = time()
     pil_img_output = _postprocess(
         image_fn= image_input_file,
@@ -78,14 +75,11 @@ def process(
     time_analysis['postprocess_time'] = end_time - start_time
     # endregion
 
-
-    
     end_time = time()
-    logging.info(f"Time inference: {(end_time-start_time)}s")
     return pil_img_output, time_analysis
 
 def main():
-    # region Input
+    # region 1. Input
     ap = argparse.ArgumentParser()
     ap.add_argument("-i", "--input", required=True,
         help="Đường dẫn đến ảnh muốn nhận dạng")
@@ -102,18 +96,20 @@ def main():
     logging.info(f"Output: {_OUTPUT}")
     # endregion Input
 
+    # region 2. main process
     pil_img_output, time_analysis = process(image_input_file=_INPUT)
 
-    # region output
-    pil_img_output.save(_OUTPUT)
-    pil_img_output.show()
     # endregion
 
-    # region Analysis time
-    print(time_analysis)
+    # region 3. Output
+    pil_img_output.save(_OUTPUT)
+    # endregion
 
+    # region 4. Analysis time
+    print(time_analysis)
     # endregion
     logging.info("==============END TASK==================")
+    
 
 if __name__ == "__main__":
     # main()
