@@ -1,9 +1,9 @@
 # To do list
 - [x] Run again
 - [x] Origanizate code
-- [ ] convert code to OOP
+- [x] convert code to OOP
+- [x] Add code margin, space , the size of character
 - [ ] Add code remove background
-- [ ] Add code margin, space , the size of character
 - [ ] Add code multi-process
 - [ ] Add code font classification
 - [ ] Add code get shape of image
