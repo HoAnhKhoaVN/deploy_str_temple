@@ -10,7 +10,7 @@ from translate_to_modern_vietnamese.translate_to_modern_vietnamese import transl
 import logging
 from rotate_img.calc_angle_between_2_line import calculate_angle_between_line
 from rotate_img.crop_image import crop_image_polygon
-from rotate_img.distance import euclidean_distance
+from utils.distance import euclidean_distance
 from rotate_img.equation_line import get_para_in_line
 from rotate_img.calc_angle_between_2_line import calculate_angle_between_line
 import cv2
