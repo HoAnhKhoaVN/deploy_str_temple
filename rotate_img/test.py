@@ -1,5 +1,5 @@
 from equation_line import get_para_in_line
-from distance import euclidean_distance
+from utils.distance import euclidean_distance
 from typing import List
 
 def get_point_in_line(

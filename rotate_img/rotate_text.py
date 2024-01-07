@@ -1,7 +1,7 @@
 from PIL import Image, ImageDraw, ImageFont
 import numpy as np
 import cv2
-from distance import euclidean_distance
+from utils.distance import euclidean_distance
 from equation_line import get_para_in_line
 from calc_angle_between_2_line import calculate_angle_between_line
 import math
