@@ -1,8 +1,6 @@
 import os
 from typing import List, Text, Tuple
-from openpyxl.drawing.image import Image
-from PIL import ImageFont, ImageDraw
-import PIL.Image
+from PIL import ImageFont, ImageDraw, Image
 import numpy as np
 import math
 import background_generator
@@ -11,42 +9,55 @@ from config import (
     PADDING_IMG_W,
     VI_LANGUAGE,
     CH_LANGUAGE,
-    BACKGROUND_IMG_DIR
+    BACKGROUND_IMG_DIR,
+    FONT_PATH
 )
 
-class DrawText(object):
+class BlendText(object):
     def __init__(
         self,
         text: Text,
         height: int,
         width: int,
-        font_path: Text,
-        fd_out: Text, 
-        fg: Text,
-        bg: Text,
-        backgroud_img_dir : Text = BACKGROUND_IMG_DIR,
+        font_path: Text = FONT_PATH,
+        fg: Tuple = (255, 0, 0),
+        fd_out: Text = "", 
+        backgroud_img_dir : Text = "",
         lang : Text = VI_LANGUAGE
     )->None:
         self.fg = fg
-        self.bg = bg
+
         self.text = text
+
         self.height = height
         self.width = width
+
         self.lang = lang
+
         self.backgroud_img_dir = backgroud_img_dir
-        self.image = background_generator.image(
+        self.image = self._init_image()
+
+        self.font_path = font_path
+
+        self.fd_out = fd_out
+        self._makedirs()
+
+    def _init_image(self)-> Image:
+        if self.backgroud_img_dir and os.path.exists(self.backgroud_img_dir):
+            return background_generator.image(
             height= self.height,
             width= self.width,
             image_dir= self.backgroud_img_dir
         )
-        self.font_path = font_path
-        self.fd_out = fd_out
-        self._makedirs()
-
-
+        else:
+            return Image.new(
+                mode = "RGBA",
+                size = (self.width, self.height),
+                color= (0,0,0,0)
+            )
 
     def _makedirs(self):
-        if not os.path.exists(self.fd_out):
+        if self.fd_out and not os.path.exists(self.fd_out):
             os.makedirs(name = self.fd_out)
 
     @staticmethod
@@ -211,7 +222,7 @@ class DrawText(object):
     def check_text_size(
         self,
         text_string: Text,
-        bbox: List,
+        bbox: List[List[int]],
         angle: float,
         font_path: Text,
     )-> Tuple:
@@ -259,12 +270,7 @@ class DrawText(object):
         res = self.euclidean_distance(tl, bl)
         return int(res)
 
-
-    def draw_text_vertical(
-        self,
-        fg_color: Tuple =(0,0,0),
-        bg_color: Tuple = (255,255,255),
-    ):
+    def draw_text_vertical(self):
         tl, tr, br, bl = (0,0), (self.width, 0), (self.width, self.height), (0, self.height)
         # region 1: Xác định bbox cho mỗi chữ trong văn bản
         # region 1.1: Viết phương trình đường thẳng của top-left và bottom-left
@@ -342,7 +348,6 @@ class DrawText(object):
                 font_path= self.font_path
             )
             lst_size.append(font_size)
-        max_font_size = min(lst_size)
         # endregion
 
         # region 4: Viết và xoay chữ
@@ -354,7 +359,7 @@ class DrawText(object):
 
             w_text, h_text = text_size
             # region 4.1: Create temporary image
-            tmp_img = PIL.Image.new(
+            tmp_img = Image.new(
                 mode = 'RGBA',
                 size = (w_text, h_text),
                 color = (0,0,0,0)
@@ -368,7 +373,7 @@ class DrawText(object):
                 text = w,
                 align= 'center',
                 font= font,
-                fill= fg_color
+                fill= self.fg
             )
             
 
@@ -408,11 +413,7 @@ class DrawText(object):
         # endregion
         return self.image
 
-    def draw_text_hor(
-        self,
-        fg_color: Tuple =(0,0,0),
-        bg_color: Tuple = (255,255,255),
-    ):
+    def draw_text_hor(self):
         
         BBOX = [
                 [PADDING_IMG_W, PADDING_IMG_H], 
@@ -442,10 +443,10 @@ class DrawText(object):
         # endregion
         
         # region 2.3: Tạo một ảnh giả có kích thước bằng với độ dài và rộng của văn bản
-        tmp_img = PIL.Image.new(
+        tmp_img = Image.new(
             mode = 'RGBA',
             size = (w_text, h_text),
-            color = bg_color
+            color = (0,0,0,0)
         )
         # endregion
 
@@ -458,7 +459,7 @@ class DrawText(object):
             text = self.text,
             align= 'center',
             font= font,
-            fill= fg_color
+            fill= self.fg
         )
         
 
@@ -499,55 +500,104 @@ class DrawText(object):
         # endregion
         return self.image
 
-
-    def __call__(self):
+    def blend_text(self):
         if self.height < self.width:
-            image_pil = self.draw_text_hor(
-                fg_color= self.fg,
-                bg_color= self.bg
-            )
+            image_pil = self.draw_text_hor()
         else:    
-            image_pil = self.draw_text_vertical(
-                fg_color= self.fg,
-                bg_color= self.bg              
+            image_pil = self.draw_text_vertical()
+
+        return image_pil
+    
+    def save_final_img(
+        self,
+        file_name: Text = ""
+    ):
+        # region 1. Blend text
+        final_img = self.blend_text()
+        # endregion
+
+        # region 2. Get file name
+        if not file_name:
+            _basename = os.path.basename(p = self.font_path)
+            name = _basename.split('.')[0]
+            text = '_'.join(self.text.split(' '))
+            draw_text_path = os.path.join(
+                self.fd_out,
+                f'{text}_{name}_h{self.height}_w{self.width}.png'
             )
+        else:
+            draw_text_path = os.path.join(
+                self.fd_out,
+                file_name
+            )
+        # endregion
 
-        _basename = os.path.basename(p = self.font_path)
-        name = _basename.split('.')[0]
-        text = '_'.join(self.text.split(' '))
-        draw_text_path = os.path.join(
-            self.fd_out,
-            f'{text}_{name}_h{self.height}_w{self.width}.png'
-        )
-
-        image_pil.save(
+        # region 3. Save image
+        final_img.save(
             fp = draw_text_path
         )
 
-        return Image(draw_text_path)
+        # endregion
+        
 
 if __name__ == '__main__':
     # Vertical
-    vertical_obj = DrawText(
-        text= 'Hồ Anh Khoa',
+    # vertical_obj = BlendText(
+    #     text= 'Hồ Anh Khoa',
+    #     height= 200,
+    #     width= 80,
+    #     font_path= "font/arial.ttf",
+    #     fd_out='output',
+    #     bg=(0,0,0,0),
+    #     fg = (255,0,0),
+    #     backgroud_img_dir= BACKGROUND_IMG_DIR
+    # )
+    # vertical_obj()
+
+    # # Horizontal
+    # horizontal_obj = BlendText(
+    #     text= 'Hồ Anh Khoa',
+    #     height= 80,
+    #     width= 200,
+    #     font_path= "font/arial.ttf",
+    #     fd_out='output',
+    #     bg=(0,0,0,0),
+    #     fg = (255,0,0),
+    #     backgroud_img_dir= BACKGROUND_IMG_DIR
+    # )
+    # horizontal_obj()
+
+    # Vertical non background
+    vertical_obj_non_bg = BlendText(
+        text= 'Hà Thanh Nhân',
         height= 200,
         width= 80,
-        font_path= "font/arial.ttf",
+        font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
         fd_out='output',
-        bg=(0,0,0,0),
-        fg = (255,0,0)
+        fg = (255,0,0),
+        backgroud_img_dir= ""
     )
-    vertical_obj()
+    vertical_obj_non_bg.save_final_img()
 
-    # Horizontal
-    horizontal_obj = DrawText(
-        text= 'Hồ Anh Khoa',
-        height= 80,
-        width= 200,
-        font_path= "font/arial.ttf",
+    vertical_obj_non_bg = BlendText(
+        text= 'Hồ Kim Tuyết',
+        height= 200,
+        width= 80,
+        font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
         fd_out='output',
-        bg=(0,0,0,0),
-        fg = (255,0,0)
+        fg = (255,0,0),
+        backgroud_img_dir= ""
     )
+    vertical_obj_non_bg.save_final_img()
 
-    horizontal_obj()
+    # Horizontal non background
+    # horizontal_obj_non_bg = BlendText(
+    #     text= 'Nguyễn Chung Thùy Dương',
+    #     height= 100,
+    #     width= 500,
+    #     font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
+    #     fd_out='output',
+    #     fg = (255,0,0),
+    #     backgroud_img_dir= ""
+    # )
+    # horizontal_obj_non_bg.save_final_img()
