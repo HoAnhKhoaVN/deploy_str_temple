@@ -34,6 +34,11 @@ apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
 Thanks: https://stackoverflow.com/questions/55313610/importerror-libgl-so-1-cannot-open-shared-object-file-no-such-file-or-directo
 
 ## Experiment
+### Setup tool
+```sh
+pip install -e .
+```
+
 ### Blendtext with random backgorund
 ```sh
 source D:/Master/OCR_Nom/deploy/azure/str_vietnam_temple/.venv/Scripts/activate
@@ -45,3 +50,4 @@ python my_postprocess/blend_text.py
 source D:/Master/OCR_Nom/deploy/azure/str_vietnam_temple/.venv/Scripts/activate
 python my_postprocess/blend_text_with_bbox.py
 ```
+
