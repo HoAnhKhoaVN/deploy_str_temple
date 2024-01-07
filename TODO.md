@@ -12,6 +12,7 @@
 - [ ] build docker compose
 - [ ] Setup
 - [ ] front-end like as clc lab
+- [ ] Merge translate code
 
 https://realpython.com/python-rich-package/#installing-rich
 https://realpython.com/tutorials/intermediate/
