@@ -770,13 +770,9 @@ def _postprocess(
     return Image.fromarray(final_image)
     # endregion
 
-    
-
-
-
 
 if __name__ == "__main__":
-    # region Input
+    # region 1. Input
     res = [{'bbox': [[117, 99], [217, 74], [284, 353], [184, 378]], 'text': 'Tĩnh Lan'}]
     res = [
         {
@@ -789,11 +785,11 @@ if __name__ == "__main__":
         },
 
     ]
-    TGT = 'experiment/'
-    image_path = 'input_demo/test_image.jpg'
+    TGT = 'output/'
+    image_path = 'input/test_image.jpg'
     # endregion
 
-    # region postprocessing
+    # region 2. Postprocessing
     res_img = _postprocess(
         image_fn= image_path,
         list_dict_result= res
@@ -802,7 +798,4 @@ if __name__ == "__main__":
     PATH = os.path.join(TGT, "test_image.jpg")
     res_img.save(PATH)
     print(PATH)
-
-
-
     # endregion
