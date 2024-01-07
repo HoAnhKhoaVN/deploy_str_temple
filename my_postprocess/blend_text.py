@@ -10,7 +10,8 @@ from config import (
     VI_LANGUAGE,
     CH_LANGUAGE,
     BACKGROUND_IMG_DIR,
-    FONT_PATH
+    FONT_PATH,
+    RESIZE_CHAR_RATIO
 )
 
 class BlendText(object):
@@ -473,7 +474,7 @@ class BlendText(object):
         # )
         # # endregion
 
-        new_h = int(self.height * 0.9)
+        new_h = int(self.height * RESIZE_CHAR_RATIO)
         # region resize image
         tmp_img = tmp_img.resize(
                 size = (
@@ -568,36 +569,36 @@ if __name__ == '__main__':
     # horizontal_obj()
 
     # Vertical non background
-    vertical_obj_non_bg = BlendText(
-        text= 'Hà Thanh Nhân',
-        height= 200,
-        width= 80,
-        font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
-        fd_out='output',
-        fg = (255,0,0),
-        backgroud_img_dir= ""
-    )
-    vertical_obj_non_bg.save_final_img()
-
-    vertical_obj_non_bg = BlendText(
-        text= 'Hồ Kim Tuyết',
-        height= 200,
-        width= 80,
-        font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
-        fd_out='output',
-        fg = (255,0,0),
-        backgroud_img_dir= ""
-    )
-    vertical_obj_non_bg.save_final_img()
-
-    # Horizontal non background
-    # horizontal_obj_non_bg = BlendText(
-    #     text= 'Nguyễn Chung Thùy Dương',
-    #     height= 100,
-    #     width= 500,
+    # vertical_obj_non_bg = BlendText(
+    #     text= 'Hà Thanh Nhân',
+    #     height= 200,
+    #     width= 80,
     #     font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
     #     fd_out='output',
     #     fg = (255,0,0),
     #     backgroud_img_dir= ""
     # )
-    # horizontal_obj_non_bg.save_final_img()
+    # vertical_obj_non_bg.save_final_img()
+
+    # vertical_obj_non_bg = BlendText(
+    #     text= 'Hồ Kim Tuyết',
+    #     height= 200,
+    #     width= 80,
+    #     font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
+    #     fd_out='output',
+    #     fg = (255,0,0),
+    #     backgroud_img_dir= ""
+    # )
+    # vertical_obj_non_bg.save_final_img()
+
+    # Horizontal non background
+    horizontal_obj_non_bg = BlendText(
+        text= 'Nguyễn Chung Thùy Dương',
+        height= 100,
+        width= 500,
+        font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
+        fd_out='',
+        fg = (255,0,0),
+        backgroud_img_dir= ""
+    )
+    horizontal_obj_non_bg.save_final_img()
