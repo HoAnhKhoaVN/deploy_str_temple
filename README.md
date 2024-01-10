@@ -51,3 +51,17 @@ source D:/Master/OCR_Nom/deploy/azure/str_vietnam_temple/.venv/Scripts/activate
 python my_postprocess/blend_text_with_bbox.py
 ```
 
+### Post-process with fill color
+```sh
+
+```
+
+
+### Post-process with remove text
+#### big lama
+```sh
+source D:/Master/OCR_Nom/deploy/azure/str_vietnam_temple/.venv/Scripts/activate
+python my_postprocess/_postprocess_remove_bg.py
+```
+
+

@@ -3,7 +3,7 @@
 - [x] Origanizate code
 - [x] convert code to OOP
 - [x] Add code margin, space , the size of character
-- [ ] Add code specific color and fill color in bbox
+- [x] Add code specific color and fill color in bbox
 - [ ] Add code remove background
 - [ ] Add code multi-process
 - [ ] Add code font classification
