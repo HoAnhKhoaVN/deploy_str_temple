@@ -12,6 +12,12 @@ from config import (
 )
 from utils.distance import euclidean_distance
 from rotate_img.calc_angle_between_2_line import calculate_angle_between_line
+from rotate_img.crop_image import crop_image_polygon
+from rotate_img.rotate_image import rotate_image
+from rotate_img.detect_rectangle_box import detect_and_crop_image
+from pylette.color_extraction import get_bg_fg_color
+import numpy as np
+import cv2
 
 class BlendTextWithBBox(BlendText):
     def __init__(
@@ -20,7 +26,6 @@ class BlendTextWithBBox(BlendText):
         bbox: List[List[int]],
         image: Image,
         font_path: Text = FONT_PATH,
-        fg: Tuple = (255, 0, 0),
         fd_out: Text = "",
         lang : Text = VI_LANGUAGE
     ) -> None:
@@ -32,11 +37,94 @@ class BlendTextWithBBox(BlendText):
         self.image = image
         self.font_path = font_path
 
-        self.fg = fg
+        self.fg, self.bg = self.get_color()
+        self.fill_color()
 
         self.fd_out = fd_out
         self.lang = lang
-  
+
+    def fill_color(self):
+        tl, tr, br, bl = self.bbox
+        tl = (int(tl[0]), int(tl[1]))
+        tr = (int(tr[0]), int(tr[1]))
+        br = (int(br[0]), int(br[1]))
+        bl = (int(bl[0]), int(bl[1]))
+        draw = ImageDraw.Draw(im = self.image)
+        draw.polygon(
+            xy = (tl, tr, br, bl),
+            fill= self.bg
+        )
+
+    def get_color(self):
+        tl, tr, br, bl = self.bbox
+        tl = (int(tl[0]), int(tl[1]))
+        tr = (int(tr[0]), int(tr[1]))
+        br = (int(br[0]), int(br[1]))
+        bl = (int(bl[0]), int(bl[1]))
+
+        np_img = np.asarray(
+            a = self.image,
+            dtype= np.uint8
+            )
+        mask_image = np.zeros(np_img.shape, dtype= np.uint8)
+
+        _mask_image, crop_img= crop_image_polygon(
+            img = np_img,
+            points= self.bbox
+        )
+        _mask_image = _mask_image[:, :, np.newaxis] # Add a new axis for the third dimension
+        _mask_image = np.repeat(
+            a = _mask_image,
+            repeats= 3,
+            axis=2
+        )
+        mask_image = cv2.bitwise_or(mask_image, _mask_image)
+        rotate_img = rotate_image(
+            image= crop_img,
+            angle= -self.angle,
+        )
+        cropped_image_pil = detect_and_crop_image(img = rotate_img)
+
+
+         # region : Get backgroud and foregroud color
+        c1, c2 = get_bg_fg_color(cropped_image_pil)
+        H, W = cropped_image_pil.shape[:2]
+        np_rgb = np.vstack(
+            tup = (
+                cropped_image_pil[0, :, :],
+                cropped_image_pil[H-1, :, :],
+                cropped_image_pil[:, 0, :],
+                cropped_image_pil[:, W-1, :]
+            )
+        )
+
+        # region get mean RBG
+        mean_corner_pixel = np.mean(
+            np_rgb, axis= 0
+        )
+        d_c1 = euclidean_distance(
+            a = mean_corner_pixel,
+            b = np.array(c1)                      
+        )
+        d_c2 = euclidean_distance(
+            a = mean_corner_pixel,
+            b = np.array(c2)
+        )
+
+        if d_c1 < d_c2:
+            bg_color = c1
+            fg_color = c2
+        else:
+            bg_color = c2
+            fg_color = c1
+        print(f"Mean pixel: {mean_corner_pixel}")
+        # endregion
+
+        print(f"Background color: {bg_color}")
+        print(f"foreground color: {fg_color}")
+        return fg_color, bg_color
+        # endregion
+
     def get_angle_bbox(self)-> float:
         tl, _, br, bl = self.bbox
         x_axis = (tl[0], 0)
@@ -208,12 +296,14 @@ class BlendTextWithBBox(BlendText):
 
     def draw_text_hor(self):
         tl, tr, br, bl = self.bbox
+        print(f'self.bbox: {self.bbox}')
         BBOX = [
                 [tl[0] + PADDING_IMG_W, tl[1] +PADDING_IMG_H], 
-                [tr[0] + self.width - PADDING_IMG_W, tr[1] - PADDING_IMG_H],
-                [br[0] + self.width - PADDING_IMG_W, br[1] + self.height - PADDING_IMG_H],
-                [bl[0] + PADDING_IMG_W, bl[1] + self.height - PADDING_IMG_H]
+                [tr[0] - PADDING_IMG_W, tr[1] - PADDING_IMG_H],
+                [br[0] - PADDING_IMG_W, br[1] - PADDING_IMG_H],
+                [bl[0] + PADDING_IMG_W, bl[1] - PADDING_IMG_H]
             ]
+        print(f'BBOX: {BBOX}')
         # region 1: Xác định kích thước của văn bản
         font_size = self.check_text_size(
             text_string= self.text,
@@ -302,7 +392,6 @@ if __name__ == "__main__":
         image = Image.open(fp= IMG_PATH),
         font_path= "font/Fz-Thu-Phap-Giao-Long-Full.ttf",
         fd_out='output',
-        fg = (255,0,0),
     )
     vertical_obj_non_bg.save_final_img()
 
