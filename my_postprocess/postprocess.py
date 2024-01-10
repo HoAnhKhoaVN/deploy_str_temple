@@ -783,7 +783,6 @@ if __name__ == "__main__":
             'bbox': [[203, 567], [241, 570], [ 164, 1020]],
             'text': "phúc sinh trọng hậu hữu tài hữu thổ hữu nhân dân"
         },
-
     ]
     TGT = 'output/'
     image_path = 'input/test_image.jpg'
