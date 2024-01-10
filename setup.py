@@ -3,6 +3,6 @@ from setuptools import setup, find_packages
 
 setup(
     name = "demo",
-    version= "2.1",
+    version= "2.2",
     packages= find_packages()
 )

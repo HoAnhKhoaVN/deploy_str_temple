@@ -53,7 +53,7 @@ python my_postprocess/blend_text_with_bbox.py
 
 ### Post-process with fill color
 ```sh
-
+python my_postprocess/_postprocess.py
 ```
 
 

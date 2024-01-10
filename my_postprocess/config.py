@@ -15,6 +15,7 @@ VI_TEXT = 'aăâbcdđeêghiklmnoôơpqrstuưvxyAĂÂBCDĐEÊGHIKLMNOÔƠPQRSTUƯ
 OUT_PATH = 'D:/Master/OCR_Nom/experiments/mapping_font/output/check_valid_font'
 BACKGROUND_IMG_DIR = "input"
 RESIZE_CHAR_RATIO = 0.9
+NUM_REMOVE_TEXT_REPEAT = 3
 
 VI_LANGUAGE='vi'
 CH_LANGUAGE='ch'

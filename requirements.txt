@@ -11,3 +11,5 @@ PyMuPDF==1.21.1
 paddleocr>=2.0.1
 paddlepaddle -i https://pypi.tuna.tsinghua.edu.cn/simple
 rich
+torch
+torchvision
