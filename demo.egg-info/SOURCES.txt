@@ -4,6 +4,11 @@ demo.egg-info/PKG-INFO
 demo.egg-info/SOURCES.txt
 demo.egg-info/dependency_links.txt
 demo.egg-info/top_level.txt
+pylette/__init__.py
+pylette/auxi.py
+pylette/color.py
+pylette/color_extraction.py
+pylette/palette.py
 rotate_img/__init__.py
 rotate_img/calc_angle_between_2_line.py
 rotate_img/crop_image.py
