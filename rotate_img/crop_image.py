@@ -1,13 +1,12 @@
 import numpy as np
-from PIL import Image
 import cv2
+from typing import Tuple, List
 # import imutils
 
 def crop_image_polygon(
-    img,
-    points: list,
-
-)-> tuple:
+    img: np.ndarray ,
+    points: List[List[int]],
+)-> Tuple:
     # region Get mask
     mask = np.zeros(img.shape[0:2], dtype=np.uint8)
     points = np.array([points])
