@@ -4,16 +4,23 @@ from utils.check_language import is_han_nom
 from my_ocr.pp_ocr.predict import ocr
 from translate.hcmus_api import hcmus_translate
 from my_postprocess.postprocess import _postprocess
+from my_postprocess._postprocess_remove_bg import PostProcessRmText
 import logging
 from typing import Text
 from PIL import Image
 # from log.logger import setup_logger
 from time import time
 # setup_logger()
+from my_postprocess.config import (
+    REMOVE_TEXT,
+    FILL_COLOR
+)
 
 def process(
     image_input_file: Text,
-    silent: bool = False
+    silent: bool = False,
+    mode: Text = REMOVE_TEXT
+
 )-> Image:
     time_analysis = dict()
     # region 1. Preprocessing
@@ -67,10 +74,23 @@ def process(
 
     # region 5. Postprocessing
     start_time = time()
-    pil_img_output = _postprocess(
-        image_fn= image_input_file,
-        list_dict_result = list_dict_result,
-    )
+    if mode == FILL_COLOR:
+        pil_img_output = _postprocess(
+            image_fn= image_input_file,
+            list_dict_result = list_dict_result,
+        )
+
+    # remove text from background
+    elif mode == REMOVE_TEXT:
+        PostProcessRmText(
+            image = image_input_file,
+            list_bbox_text = list_dict_result,
+            debug= False,
+            quality= False,
+        ).postprocess()
+    else:
+        raise Exception(f'Wrong type of mode for postprocess. Only `rm_text` or `fill_color` (not `{mode}`)')
+
     end_time = time()
     time_analysis['postprocess_time'] = end_time - start_time
     # endregion
@@ -109,8 +129,30 @@ def main():
     print(time_analysis)
     # endregion
     logging.info("==============END TASK==================")
-    
 
+
+def testcase_1():
+    IMG_NAME = 'cau_doi_1'
+    MODE = FILL_COLOR
+    img, time_analysis = process(
+        image_input_file=f'input/{IMG_NAME}.jpg',
+        mode= MODE
+    )
+    img.save(f'output/{IMG_NAME}__{MODE}.jpg')
+
+    print(f'Time analysis: {time_analysis}')
+
+    
+def testcase_2():
+    IMG_NAME = 'cau_doi_1'
+    MODE = REMOVE_TEXT
+    img, time_analysis = process(
+        image_input_file=f'input/{IMG_NAME}.jpg',
+        mode= MODE
+    )
+    img.save(f'output/{IMG_NAME}__{MODE}.jpg')
+
+    print(f'Time analysis: {time_analysis}')
 if __name__ == "__main__":
     # main()
     # IMG_NAME = "366641616_2264556887067173_1651877982799532575_n"
@@ -121,14 +163,11 @@ if __name__ == "__main__":
     # IMG_NAME = '1923962_1370238453082504_4224712044219484343_n'
     # IMG_NAME = '366641616_2264556887067173_1651877982799532575_n'
     # IMG_NAME = '18278972_297318970702821_2600128763625419236_o'
-    IMG_NAME = 'cau_doi_1'
+    # IMG_NAME = 'cau_doi_1'
     # IMG_NAME = "test_image"
     # IMG_NAME = "14718859_208204472925484_1150455697377965541_n"
     # IMG_NAME = '13718780_847719332039821_170320190789157617_n'
 
-    img, time_analysis = process(
-        image_input_file=f'input/{IMG_NAME}.jpg',
-    )
-    img.save(f'output/{IMG_NAME}.jpg')
-
-    print(f'Time analysis: {time_analysis}')
+    testcase_1()
+    
+    

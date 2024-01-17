@@ -19,3 +19,7 @@ NUM_REMOVE_TEXT_REPEAT = 3
 
 VI_LANGUAGE='vi'
 CH_LANGUAGE='ch'
+
+
+REMOVE_TEXT = "rm_text"
+FILL_COLOR = 'fill_color'
