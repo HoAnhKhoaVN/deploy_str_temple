@@ -3,8 +3,8 @@ from typing import List, Text, Tuple
 from PIL import ImageFont, ImageDraw, Image
 import numpy as np
 import math
-import background_generator
-from config import (
+from .background_generator import image
+from .config import (
     PADDING_IMG_H,
     PADDING_IMG_W,
     VI_LANGUAGE,
@@ -45,7 +45,7 @@ class BlendText(object):
 
     def _init_image(self)-> Image:
         if self.backgroud_img_dir and os.path.exists(self.backgroud_img_dir):
-            return background_generator.image(
+            return image(
             height= self.height,
             width= self.width,
             image_dir= self.backgroud_img_dir

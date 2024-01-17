@@ -1,7 +1,7 @@
 from typing import Text, List, Tuple
-from blend_text import BlendText
+from .blend_text import BlendText
 from PIL import Image, ImageFont, ImageDraw
-from config import (
+from .config import (
     BACKGROUND_IMG_DIR, 
     VI_LANGUAGE, 
     FONT_PATH,

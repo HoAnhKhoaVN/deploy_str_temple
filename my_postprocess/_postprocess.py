@@ -3,7 +3,7 @@ import os
 from PIL import Image
 from typing import Any, Text, Dict, List
 from tqdm import tqdm
-from blend_text_with_bbox import BlendTextWithBBox
+from .blend_text_with_bbox import BlendTextWithBBox
 
 
 class PostProcess(object):

@@ -138,7 +138,11 @@ def testcase_1():
         image_input_file=f'input/{IMG_NAME}.jpg',
         mode= MODE
     )
-    img.save(f'output/{IMG_NAME}__{MODE}.jpg')
+    
+    OUT_PATH = f"output/{IMG_NAME}__{MODE}.jpg"
+    img.save(OUT_PATH)
+
+    print(f'Save success with path : {OUT_PATH}')
 
     print(f'Time analysis: {time_analysis}')
 
@@ -150,8 +154,11 @@ def testcase_2():
         image_input_file=f'input/{IMG_NAME}.jpg',
         mode= MODE
     )
-    img.save(f'output/{IMG_NAME}__{MODE}.jpg')
 
+    OUT_PATH = f"output/{IMG_NAME}__{MODE}.jpg"
+    img.save(OUT_PATH)
+
+    print(f'Save success with path : {OUT_PATH}')
     print(f'Time analysis: {time_analysis}')
 if __name__ == "__main__":
     # main()
@@ -169,5 +176,6 @@ if __name__ == "__main__":
     # IMG_NAME = '13718780_847719332039821_170320190789157617_n'
 
     testcase_1()
-    
+    testcase_2()
+
     

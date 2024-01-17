@@ -2,10 +2,10 @@ from copy import deepcopy
 from typing import Any, Dict, List, Text
 
 from tqdm import tqdm
-from _postprocess import PostProcess
+from ._postprocess import PostProcess
 import numpy as np
-from blend_text_with_bbox import BlendTextWithBBox
-from config import FONT_PATH, VI_LANGUAGE, NUM_REMOVE_TEXT_REPEAT
+from .blend_text_with_bbox import BlendTextWithBBox
+from .config import FONT_PATH, VI_LANGUAGE, NUM_REMOVE_TEXT_REPEAT
 from pylette.color_extraction import get_bg_fg_color
 from rotate_img.crop_image import crop_image_polygon
 import cv2
