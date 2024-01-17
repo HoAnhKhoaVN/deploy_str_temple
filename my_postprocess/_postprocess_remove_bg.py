@@ -214,7 +214,7 @@ def testcase_1():
     obj_postprocess = PostProcessRmText(
         image = IMAGE_PATH,
         list_bbox_text = DICT_BBOX_TEXT,
-        quality= True,
+        quality= False,
         debug= False
     )
     
@@ -255,13 +255,55 @@ def testcase_3():
     ]
     obj_postprocess = PostProcessRmText(
         image = IMAGE_PATH,
-        list_bbox_text = DICT_BBOX_TEXT
+        list_bbox_text = DICT_BBOX_TEXT,
+        debug= False,
+        quality= False,
     )
     
     obj_postprocess.postprocess()
     obj_postprocess.save_img(f"output/{PREFIX}__13925854_308100976209095_8956468595154727390_o.jpg")
 
+def testcase_4():
+    PREFIX = "blendtext_rm_bg"
+    IMAGE_PATH = "input/cau_doi_1.jpg"
+    DICT_BBOX_TEXT = [
+        {
+            'bbox': [[245, 8], [293, 11], [256, 614], [209, 612]], 
+            'text': 'Hiện Thế Vi Nhất Sư Đương Lai Tác Phật Tô'
+        }, 
+        {
+            'bbox': [[747, 16], [790, 18], [774, 576], [730, 575]], 
+            'text': 'Hữu Thiền Hữu Tịnh Thổ Hoành Như Dải Giác Hổ'
+        }
+    ]
+    obj_postprocess = PostProcessRmText(
+        image = IMAGE_PATH,
+        list_bbox_text = DICT_BBOX_TEXT,
+        debug= False,
+        quality= False,
+    )
+    
+    obj_postprocess.postprocess()
+    obj_postprocess.save_img(f"output/{PREFIX}__cau_doi_1.jpg")
+
+def testcase_5():
+    PREFIX = "blendtext_rm_bg"
+    IMAGE_PATH = "input/err1.jpg"
+    DICT_BBOX_TEXT = [{'bbox': [[1314, 426], [1393, 424], [1404, 952], [1325, 954]], 'text': 'Nể Mong Phủ Xướng Năng Nhãn'}, {'bbox': [[566, 441], [641, 436], [673, 976], [598, 980]], 'text': 'Cung Phủ Thái Lai Chi Phúc'}]
+    obj_postprocess = PostProcessRmText(
+        image = IMAGE_PATH,
+        list_bbox_text = DICT_BBOX_TEXT,
+        debug= False,
+        quality= False,
+    )
+    
+    obj_postprocess.postprocess()
+    obj_postprocess.save_img(f"output/{PREFIX}__err1.jpg")
+
+
 if __name__ == "__main__":
-    testcase_1()
-    testcase_2()
-    testcase_3()
+    # testcase_1()
+    # testcase_2()
+    # testcase_3()
+    # testcase_4()
+    testcase_5()
