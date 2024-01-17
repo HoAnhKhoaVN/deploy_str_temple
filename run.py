@@ -82,7 +82,7 @@ def process(
 
     # remove text from background
     elif mode == REMOVE_TEXT:
-        PostProcessRmText(
+        pil_img_output = PostProcessRmText(
             image = image_input_file,
             list_bbox_text = list_dict_result,
             debug= False,
@@ -175,7 +175,7 @@ if __name__ == "__main__":
     # IMG_NAME = "14718859_208204472925484_1150455697377965541_n"
     # IMG_NAME = '13718780_847719332039821_170320190789157617_n'
 
-    testcase_1()
+    # testcase_1()
     testcase_2()
 
     
