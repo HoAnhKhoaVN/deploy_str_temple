@@ -85,7 +85,7 @@ def process(
         pil_img_output = PostProcessRmText(
             image = image_input_file,
             list_bbox_text = list_dict_result,
-            debug= False,
+            debug= True,
             quality= False,
         ).postprocess()
     else:
@@ -160,6 +160,23 @@ def testcase_2():
 
     print(f'Save success with path : {OUT_PATH}')
     print(f'Time analysis: {time_analysis}')
+
+def testcase_3():
+    IMG_NAME = 'Cao_Son_Hanh_Canh.png'
+    # IMG_NAME = 'demo_convert_rgba_2_rgb.jpg'
+    MODE = REMOVE_TEXT
+    img, time_analysis = process(
+        image_input_file=f'input/{IMG_NAME}',
+        mode= MODE
+    )
+
+    OUT_PATH = f"output/{IMG_NAME}__{MODE}.jpg"
+    img.save(OUT_PATH)
+
+    print(f'Save success with path : {OUT_PATH}')
+    print(f'Time analysis: {time_analysis}')
+
+
 if __name__ == "__main__":
     # main()
     # IMG_NAME = "366641616_2264556887067173_1651877982799532575_n"
@@ -176,6 +193,7 @@ if __name__ == "__main__":
     # IMG_NAME = '13718780_847719332039821_170320190789157617_n'
 
     # testcase_1()
-    testcase_2()
+    # testcase_2()
+    testcase_3()
 
     

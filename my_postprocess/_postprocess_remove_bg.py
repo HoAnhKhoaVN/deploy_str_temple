@@ -64,6 +64,13 @@ class BlendTextOps(BlendTextWithBBox):
             repeats= 3,
             axis=2
         )
+
+        print(f'Type of _mask_image: {type(_mask_image)}')
+        print(f'Type of mask image: {type(mask_image)}')
+
+        print(f'Shape _mask_image: {_mask_image.shape}')
+        print(f'Shape mask image: {mask_image.shape}')
+
         mask_image = cv2.bitwise_or(mask_image, _mask_image)
         rotate_img = rotate_image(
             image= crop_img,
@@ -175,6 +182,7 @@ class PostProcessRmText(PostProcess):
     def remove_text_quality(self):
         for i in range(NUM_REMOVE_TEXT_REPEAT):
             image = self.remove_text()
+            self.image = image
         
         return image
             

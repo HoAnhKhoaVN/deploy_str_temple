@@ -4,6 +4,7 @@ from PIL import Image
 from typing import Any, Text, Dict, List
 from tqdm import tqdm
 from .blend_text_with_bbox import BlendTextWithBBox
+from utils.convert_rgba_to_rgb import rgba2rgb
 
 
 class PostProcess(object):
@@ -26,6 +27,7 @@ class PostProcess(object):
         if isinstance(image, str):
             try:
                 image = Image.open(fp = image)
+                image = rgba2rgb(image)
                 return image
             except Exception as err_init_image:
                 print(f"Err: {err_init_image} - Image path: {image}")
