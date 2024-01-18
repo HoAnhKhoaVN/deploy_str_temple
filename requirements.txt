@@ -13,3 +13,7 @@ paddlepaddle -i https://pypi.tuna.tsinghua.edu.cn/simple
 rich
 torch
 torchvision
+google-cloud-documentai
+google-cloud-core
+google-cloud-secret-manager
+google-cloud-vision
