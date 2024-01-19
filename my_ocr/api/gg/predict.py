@@ -6,6 +6,8 @@ from typing import Text
 from re import findall
 
 os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = 'key/apikey.json'
+os.environ['GRPC_DNS_RESOLVER'] = 'native'
+
 CLIENT = vision.ImageAnnotatorClient()
 
 def is_han_nom(
@@ -25,9 +27,18 @@ def detect_text(path: Text):
     # endregion
 
     # region 2. Call API
+    # response = CLIENT.text_detection(image=image)
+    # texts = response.text_annotations
+    # description_text = texts[0].description
+    # print(f'texts: {description_text}')
+
     response = CLIENT.text_detection(image=image)
+    print(f'{dir(response)}')
     texts = response.full_text_annotation
-    
+    print(f'{dir(texts)}')
+    print(f'text: {texts.text}')
+    # print(f'text: {texts.pages}')
+
     # endregion
 
     if response.error.message:
@@ -38,11 +49,11 @@ def detect_text(path: Text):
 
     # region 3. Postprocess
 
+
     for page in texts.pages:
-        for block in page.blocks:
-            print(dir(block))
-            print(block.bounding_box)
-            print(block.paragraphs)
+        for idx, block in enumerate(page.blocks):
+            print(idx)
+            print(block.bounding_poly)
     
     exit()
 
