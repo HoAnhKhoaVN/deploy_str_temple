@@ -86,7 +86,7 @@ class BlendTextWithBBox(BlendText):
         cropped_image_pil = detect_and_crop_image(img = rotate_img)
 
 
-         # region : Get backgroud and foregroud color
+        # region : Get backgroud and foregroud color
         c1, c2 = get_bg_fg_color(cropped_image_pil)
         H, W = cropped_image_pil.shape[:2]
         np_rgb = np.vstack(
@@ -298,7 +298,7 @@ class BlendTextWithBBox(BlendText):
         tl, tr, br, bl = self.bbox
         print(f'self.bbox: {self.bbox}')
         BBOX = [
-                [tl[0] + PADDING_IMG_W, tl[1] +PADDING_IMG_H], 
+                [tl[0] + PADDING_IMG_W, tl[1] + PADDING_IMG_H], 
                 [tr[0] - PADDING_IMG_W, tr[1] - PADDING_IMG_H],
                 [br[0] - PADDING_IMG_W, br[1] - PADDING_IMG_H],
                 [bl[0] + PADDING_IMG_W, bl[1] - PADDING_IMG_H]
